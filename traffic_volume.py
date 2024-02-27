@@ -1,3 +1,4 @@
+#擷取網頁交通量資訊並加註解
 import requests
 import pandas as pd
 from io import StringIO
@@ -23,11 +24,8 @@ if response.status_code == 200:
     data['GantryID'].replace(mapping['GantryID'], inplace=True)
     # 替換Direction中的值
     data['Direction'].replace(mapping['Direction'], inplace=True)
-  
-
-    data['VehicleType'] = data['VehicleType'].astype(str)
-    # 替換VehicleType中的值
-    data['VehicleType'].replace(mapping['VehicleType'], inplace=True)
+    #替換VehicleType中的值並轉型態(int64->str)
+    data['VehicleType'].astype(str).replace(mapping['VehicleType'], inplace=True)
     
 
     # 保存DataFrame到CSV文件
