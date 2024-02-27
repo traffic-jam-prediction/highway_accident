@@ -24,8 +24,9 @@ if response.status_code == 200:
     data['GantryID'].replace(mapping['GantryID'], inplace=True)
     # 替換Direction中的值
     data['Direction'].replace(mapping['Direction'], inplace=True)
-    #替換VehicleType中的值並轉型態(int64->str)
-    data['VehicleType'].astype(str).replace(mapping['VehicleType'], inplace=True)
+    # 轉型態(int64->str)並替換VehicleType中的值
+    data['VehicleType'] = data['VehicleType'].astype(str)
+    data['VehicleType'].replace(mapping['VehicleType'], inplace=True)
     
 
     # 保存DataFrame到CSV文件
