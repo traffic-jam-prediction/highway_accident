@@ -28,7 +28,7 @@ if response.status_code == 200:
                 large_car += tv
             else:
                 small_car += tv
-        pcu = large_car * 1.4 + small_car
+        pcu = round(large_car * 1.4 + small_car,2)
         # 設置每個分組的最後一行的 'PCU' 欄位
         last_row_index = group_data.tail(1).index
         data.loc[last_row_index, 'PCU'] = pcu
