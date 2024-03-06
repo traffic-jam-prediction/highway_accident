@@ -23,4 +23,4 @@ pivot_table_df = pivot_table_df.reindex(columns=['事故數量'] + pivot_table_d
 # 保存結果到新的 CSV 文件
 pivot_table_df.to_csv("accident_count_with_types.csv",encoding='utf-8-sig')
 
-print("结果已保存到 accident_count_with_types.csv 文件中。")
+print("結果已保存到 accident_count_with_types.csv 文件中。")
