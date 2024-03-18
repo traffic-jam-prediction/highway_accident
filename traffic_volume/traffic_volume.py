@@ -5,7 +5,7 @@ from io import StringIO
 import json
 
 # 加載映射文件
-with open('mapping.json', 'r', encoding='utf-8') as file:
+with open('traffic_volume_attributes.json', 'r', encoding='utf-8') as file:
     mapping = json.load(file)
 
 url = "https://tisvcloud.freeway.gov.tw/history/TDCS/M03A/20240227/15/TDCS_M03A_20240227_153500.csv"
@@ -18,28 +18,27 @@ if response.status_code == 200:
     data = pd.read_csv(StringIO(response.text), header=None)
     
     # 為DataFrame添加標題行
-    data.columns = ['TimeInterval', 'GantryID', 'Direction', 'VehicleType', 'TrafficVolume']
+    data.columns = ['TimeInterval', 'RoadSection', 'Direction', 'VehicleType', 'TrafficVolume']
     
     # 根據 GantryID 分組並分類 VehicleType(非小車*1.4)
-    for gantry_id, group_data in data.groupby('GantryID'):
+    for gantry_id, group_data in data.groupby('RoadSection'):
         large_car, small_car = 0, 0
         for vt, tv in zip(group_data['VehicleType'], group_data['TrafficVolume']):
             if vt in [41, 42, 5]:
                 large_car += tv
             else:
                 small_car += tv
-        pcu = round(large_car * 1.4 + small_car,2)
-        # 設置每個分組的最後一行的 'PCU' 欄位
+        pcu = round(large_car * 1.4 + small_car, 2)
         last_row_index = group_data.tail(1).index
         data.loc[last_row_index, 'PCU'] = pcu
 
     # 使用映射替換GantryID的值
-    data['GantryID'].replace(mapping['GantryID'], inplace=True)
+    data.replace({'RoadSection':mapping['RoadSection']}, inplace=True)
     # 替換Direction中的值
-    data['Direction'].replace(mapping['Direction'], inplace=True)
+    data.replace({'Direction':mapping['Direction']}, inplace=True)
     # 轉型態(int64->str)並替換VehicleType中的值
     data['VehicleType'] = data['VehicleType'].astype(str)
-    data['VehicleType'].replace(mapping['VehicleType'], inplace=True)
+    data.replace({'VehicleType':mapping['VehicleType']}, inplace=True)
 
     
 

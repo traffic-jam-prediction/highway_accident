@@ -1,12 +1,10 @@
 import pandas as pd
 
-# 設定所有 CSV 檔案的路徑
-csv_files = ['國道1號.csv','國道1號_h.csv', '國道3號.csv', '國道5號.csv']
 
 # 定義函式來判斷事件位置
 def detect_location(kilometer, highway):
     # 根據所在國道選擇相應的 CSV 檔案
-    csv_file = f"{highway}.csv"
+    csv_file = f"../{highway}.csv"
     df = pd.read_csv(csv_file, encoding='utf-8')
     
     for index, row in df.iterrows():
@@ -28,9 +26,9 @@ for index, row in df.iterrows():
                 continue    # 跳過後續程式碼，處理下一行資料
             if highway in ["國道1號"]:
                 if kilometer<13:
-                    location = "汐止端"
+                    continue
                 else:
-                    highway = highway+"_h"
+                    highway = highway+"_高架"
                     location = detect_location(kilometer, highway) 
                 location = location + "(高架)"
                 time_info = f"{int(row['年'])}-{int(row['月'])}-{int(row['日'])} {int(row['時'])}:{int(row['分'])}:{int(row['秒'])}"
