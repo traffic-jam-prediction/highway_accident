@@ -1,4 +1,5 @@
 test.py
+test2.py
 test.csv
 test1.csv
 test2.csv
@@ -16,14 +17,7 @@ A3_accident.csv
 #2023	8	7	12	45	53	A3	新北市	林口區	國道1號	414	0	414	南分局
 #414改為41
 
-國道1號.csv 
-#高雄端由373->374
 
-國道1號_h.csv  
-#將里程的高架移除
-
-國道3號.csv
-國道5號.csv
 
 # traffic_volume folder
 
