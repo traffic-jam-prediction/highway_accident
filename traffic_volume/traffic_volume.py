@@ -39,13 +39,13 @@ if response.status_code == 200:
     # 替換Direction中的值
     data.replace({'Direction':mapping['Direction']}, inplace=True)
     # 轉型態(int64->str)並替換VehicleType中的值
-    #data['VehicleType'] = data['VehicleType'].astype(str)
+    data['VehicleType'] = data['VehicleType'].astype(str)
     data.replace({'VehicleType':mapping['VehicleType']}, inplace=True)
 
     
 
     # 保存DataFrame到CSV文件
-    data.to_csv('trafficvolume_data_with_PCU2.csv', index=False, encoding='utf_8_sig')
+    data.to_csv('trafficvolume_data_with_PCU.csv', index=False, encoding='utf_8_sig')
     print("數據已保存到 'trafficvolume_data_with_PCU.csv'")
 else:
     print("無法從URL獲取數據,請檢查URL或網絡連接.")
