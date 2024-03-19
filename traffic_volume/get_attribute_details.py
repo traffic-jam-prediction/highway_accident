@@ -108,6 +108,8 @@ def extract_gantryID_from_table(table: list) -> list:
             text_top = text[:gantryID_example_length]
             if is_valid_gantryID(text_top):
                 gantryID_list.append(text_top)
+    # 新增交通部沒給的偵測站
+    gantryID_list.append('01F0339N')
     return gantryID_list
 
 
