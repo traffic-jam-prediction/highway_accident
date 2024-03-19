@@ -4,7 +4,7 @@ import pandas as pd
 # 定義函式來判斷事件位置
 def detect_location(kilometer, highway):
     # 根據所在國道選擇相應的 CSV 檔案
-    csv_file = f"../{highway}.csv"
+    csv_file = f"../highway_ information/{highway}.csv"
     df = pd.read_csv(csv_file, encoding='utf-8')
     
     for index, row in df.iterrows():
