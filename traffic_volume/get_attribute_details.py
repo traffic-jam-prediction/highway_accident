@@ -135,6 +135,9 @@ def gantryID_roadsection_mapping()-> list:
             for index, row in df.iterrows():      
                 if row['里程K+000'] <= kilometer <= df.iloc[index+1]['里程K+000']:
                     roadsection = f"{row['設施名稱']}-{ df.iloc[index+1]['設施名稱']}"
+                    if gantryID[2:3] == 'H':
+                        roadsection = roadsection + "(高架)"
+                    
                     mapping[gantryID] = roadsection
                      
         else:
