@@ -1,10 +1,11 @@
 import json
 from web_scraping import price_data_file, scrape_oil_price
 from datetime import date, timedelta
+import os
 
 def read_price_data_from_json() -> dict:
     data = None
-    with open(price_data_file, 'r') as json_file:
+    with open(price_data_file, 'r', encoding="utf-8") as json_file:
         data = json.load(json_file)
     return data
 
@@ -23,6 +24,10 @@ def data_is_outdated(price_data: dict) -> bool:
 # please give the date_string in ISO format (which is 2023-03-19 for the common used 2023/03/19)
 def get_price(date_string: str):
     target_date = date.fromisoformat(date_string)
+
+    if not os.path.exists(price_data_file):
+        print("getting price data ...")
+        scrape_oil_price()
 
     oil_price_data = read_price_data_from_json()
 

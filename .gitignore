@@ -28,3 +28,6 @@ A3_accident.csv
 # traffic_volume folder
 
 traffic_volume_attributes.json
+
+# python
+__pycache__/

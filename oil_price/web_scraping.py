@@ -64,7 +64,7 @@ def scrape_oil_price():
             with open(price_data_file, 'w', encoding="utf8") as json_file:
                 json.dump(oil_price, json_file, indent=4, ensure_ascii=False)
 
-            print(f"Data saved to {price_data_file}")
+            print(f"price data saved to {price_data_file}")
 
         else:
             print("Table with ID 'MyGridView' not found on the page.")
