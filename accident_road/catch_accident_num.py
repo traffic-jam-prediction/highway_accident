@@ -22,8 +22,11 @@ pivot_table_df1['事故數量'] = grouped_df1.groupby('路段')['事故數量'].
 # 重新排列列的順序，將'事故數量'列移到'路段'列後面
 pivot_table_df1 = pivot_table_df1.reindex(columns=['事故數量'] + pivot_table_df1.columns[:-1].tolist())
 
-#合併(加入方向)
+# 合併(加入方向)
 merged_pivot_table_df = pd.concat([pivot_table_df1, pivot_table_df2], axis=1)
+
+# 事故數量多到少排列
+merged_pivot_table_df = merged_pivot_table_df.sort_values(by='事故數量', ascending=False)
 
 # 保存結果到新的 CSV 文件
 merged_pivot_table_df.to_csv("accident_count.csv",encoding='utf-8-sig')
