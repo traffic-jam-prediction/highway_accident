@@ -123,10 +123,10 @@ def gantryID_roadsection_mapping()-> list:
         first_three_digits = gantryID[:3]
         if first_three_digits in ['01F','01H','03F','05F']:
             if gantryID[2:3] == 'H':
-                 csv_file = f"../highway_ information/國道1號_高架.csv"
+                 csv_file = f"../highway_information/國道1號_高架.csv"
             else:
                 highway = gantryID[1:2]
-                csv_file = f"../highway_ information/國道{highway}號.csv"
+                csv_file = f"../highway_information/國道{highway}號.csv"
 
             if gantryID[3:4] == 'R':
                 kilometer = int(gantryID[4:7])/10
