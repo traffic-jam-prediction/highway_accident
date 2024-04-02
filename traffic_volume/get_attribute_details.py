@@ -101,6 +101,9 @@ def extract_gantryID_from_table(table: list) -> list:
         if text == "":
             continue
         if is_valid_gantryID(text):
+            # 2023交通部給的偵測站代碼為339，2024才改為340
+            if text == '01F0340N':
+                text='01F0339N' 
             gantryID_list.append(text)
         elif is_valid_road_segment(text):
             continue
@@ -108,8 +111,6 @@ def extract_gantryID_from_table(table: list) -> list:
             text_top = text[:gantryID_example_length]
             if is_valid_gantryID(text_top):
                 gantryID_list.append(text_top)
-    # 新增交通部沒給的偵測站
-    gantryID_list.append('01F0339N')
     return gantryID_list
 
 
