@@ -39,7 +39,7 @@ def get_trafficvolume(m03a_file, m05a_file):
     m03a_dict = m03a.to_dict('records')
     m05a_dict = m05a.to_dict('records')
     df_dict = df.to_dict('records')
-    new_df = pd.DataFrame(columns=['Date','TimeInterval','RoadSection','Highway','Direction',
+    new_df = pd.DataFrame(columns=['Date','TimeInterval','RoadSection','Highway','Direction','Midpoint',
                                'M03A_PCU','M03A_PCU_BigGap','M05A_SpaceMeanSpeed','M05A_PCU'])
 
     for row in df_dict:
@@ -103,14 +103,16 @@ def get_trafficvolume(m03a_file, m05a_file):
         date, time_interval = m03a_data['TimeInterval'].split(' ')
         if new_df.empty:
             new_df = pd.DataFrame({'Date':[date],'TimeInterval': [time_interval],'RoadSection':row['roadsection'],
-                                   'Highway':row['highway'],'Direction':row['direction'],'M03A_PCU':[pcu],
-                               'M03A_PCU_BigGap': [biggap],'M05A_SpaceMeanSpeed': [speed],'M05A_PCU':[pcu_m05a]})
+                                   'Highway':row['highway'],'Direction':row['direction'], 'Midpoint':row['midpoint'],
+                                   'M03A_PCU':[pcu],'M03A_PCU_BigGap': [biggap],
+                                   'M05A_SpaceMeanSpeed': [speed],'M05A_PCU':[pcu_m05a]})
         else:
             new_df = pd.concat([new_df, pd.DataFrame({'Date': [date], 
                                             'TimeInterval': [time_interval], 
                                             'RoadSection':row['roadsection'],
                                             'Highway':row['highway'],
                                             'Direction':row['direction'],
+                                            'Midpoint':row['midpoint'],
                                             'M03A_PCU':[pcu],
                                             'M03A_PCU_BigGap': [biggap],
                                             'M05A_SpaceMeanSpeed': [speed],
@@ -195,16 +197,16 @@ if __name__ == '__main__':
         matching_files_m05a.extend(find_matching_files(root_dir_m05a, prefix_m05a, date))
 
     # 取得m03a_data資訊
-    new_df = pd.DataFrame(columns=['Date','TimeInterval','RoadSection','Highway','Direction',
+    new_df = pd.DataFrame(columns=['Date','TimeInterval','RoadSection','Highway','Direction','Midpoint',
                                'M03A_PCU','M03A_PCU_BigGap','M05A_SpaceMeanSpeed','M05A_PCU'])
     for file_m03a, file_m05a in zip(matching_files_m03a, matching_files_m05a):
         new_df = pd.concat([new_df, get_trafficvolume(file_m03a, file_m05a)], ignore_index=True)
         print(file_m03a, file_m05a)
-    new_df.to_csv('trafficvolume_0101.csv', index=False, encoding='utf-8-sig')
-    print("數據已保存到 'trafficvolume.csv'")
+    new_df.to_csv('Integrated_data_0101.csv', index=False, encoding='utf-8-sig')
+    print("數據已保存到 'Integrated_data.csv'")
 
     # 計算各路段交通量
-    countfile_path = 'trafficvolume_0101.csv'
+    countfile_path = 'Integrated_data_0101.csv'
     count_trafficvolume(countfile_path)
 
 

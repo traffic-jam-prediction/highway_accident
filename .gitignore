@@ -4,10 +4,10 @@ test.csv
 test1.csv
 test2.csv
 count_file.csv
-trafficvolume_0101.csv
+
 trafficvolume.csv
 extracted_files
-roadsectiondata_with_nearest.csv
+
 __pycache__
 
 A1_accident.csv
