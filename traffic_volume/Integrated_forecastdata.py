@@ -39,7 +39,7 @@ def get_trafficvolume(m03a_file, m05a_file):
     m03a_dict = m03a.to_dict('records')
     m05a_dict = m05a.to_dict('records')
     df_dict = df.to_dict('records')
-    new_df = pd.DataFrame(columns=['Date','TimeInterval','RoadSection','Highway','Direction','Midpoint',
+    new_df = pd.DataFrame(columns=['Date','Time','RoadSection','Highway','Direction','Midpoint',
                                'M03A_PCU','M03A_PCU_BigGap','M05A_SpaceMeanSpeed','M05A_PCU'])
 
     for row in df_dict:
@@ -65,7 +65,28 @@ def get_trafficvolume(m03a_file, m05a_file):
             biggap = np.nan
     
         for m05a_data in m05a_dict:
-            if row['direction'] == 'S':
+            if (row['roadsection'] == '汐止端-堤頂交流道' and row['direction']== 'S' 
+                and m05a_data['GantryFrom']=='01F0099S' and m05a_data['GantryTo']=='01H0163S'):
+                speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
+                if m05a_data['VehicleType'] in [41, 42, 5]:
+                    pcua += m05a_data['Traffic'] 
+                else:
+                    pcub += m05a_data['Traffic']
+            elif (row['roadsection'] == '中壢轉接道-校前路交流道' and row['direction']== 'N'
+                  and m05a_data['GantryFrom']=='01F0750N' and m05a_data['GantryTo']=='01H0608N'):
+                speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
+                if m05a_data['VehicleType'] in [41, 42, 5]:
+                    pcua += m05a_data['Traffic'] 
+                else:
+                    pcub += m05a_data['Traffic']
+            elif (row['roadsection'] == '羅東交流道-蘇澳交流道' and row['direction']== 'S'
+                 and m05a_data['GantryFrom']=='05F0439S' and m05a_data['GantryTo']=='05F0494S'):
+                speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
+                if m05a_data['VehicleType'] in [41, 42, 5]:
+                    pcua += m05a_data['Traffic'] 
+                else:
+                    pcub += m05a_data['Traffic']
+            elif row['direction'] == 'S':
                 if (m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'][:3] == '05F'and m05a_data['GantryFrom'].endswith("S") and 
                     int(m05a_data['GantryFrom'][4:7])/10 <= row['midpoint'] < int(m05a_data['GantryTo'][4:7])/10) :
                     speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
@@ -80,6 +101,7 @@ def get_trafficvolume(m03a_file, m05a_file):
                         pcua += m05a_data['Traffic'] 
                     else:
                         pcub += m05a_data['Traffic']
+ 
             elif row['direction'] == 'N': 
                 if (m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'][:3] == '05F' and m05a_data['GantryFrom'].endswith("N") and 
                     int(m05a_data['GantryTo'][4:7])/10 <= row['midpoint'] < int(m05a_data['GantryFrom'][4:7])/10) :
@@ -95,20 +117,26 @@ def get_trafficvolume(m03a_file, m05a_file):
                         pcua += m05a_data['Traffic'] 
                     else:
                         pcub += m05a_data['Traffic']
+ 
         pcu_m05a = pcua * 1.4 + pcub
+        
+        # m05a資料未經過此路段中點
         if pcua + pcub ==0:
-            continue
+            speed = np.nan
+            pcu_m05a = np.nan
+
         else:
             speed = round(speed/( pcua + pcub ),1)
-        date, time_interval = m03a_data['TimeInterval'].split(' ')
+        date, time = m03a_data['TimeInterval'].split(' ')
+        date = datetime.strptime(date, '%Y-%m-%d')
         if new_df.empty:
-            new_df = pd.DataFrame({'Date':[date],'TimeInterval': [time_interval],'RoadSection':row['roadsection'],
+            new_df = pd.DataFrame({'Date':[date],'Time': [time],'RoadSection':row['roadsection'],
                                    'Highway':row['highway'],'Direction':row['direction'], 'Midpoint':row['midpoint'],
                                    'M03A_PCU':[pcu],'M03A_PCU_BigGap': [biggap],
                                    'M05A_SpaceMeanSpeed': [speed],'M05A_PCU':[pcu_m05a]})
         else:
             new_df = pd.concat([new_df, pd.DataFrame({'Date': [date], 
-                                            'TimeInterval': [time_interval], 
+                                            'Time': [time], 
                                             'RoadSection':row['roadsection'],
                                             'Highway':row['highway'],
                                             'Direction':row['direction'],
@@ -161,7 +189,8 @@ def find_matching_files(root_dir, prefix, date):
                 matching_files.append(os.path.join(root, file))
     return matching_files
 
-if __name__ == '__main__':
+def integrated_forecastdata():
+#if __name__ == '__main__':
     with open('traffic_volume_attributes.json', 'r', encoding='utf-8') as file:
         mapping = json.load(file)
 
@@ -197,18 +226,20 @@ if __name__ == '__main__':
         matching_files_m05a.extend(find_matching_files(root_dir_m05a, prefix_m05a, date))
 
     # 取得m03a_data資訊
-    new_df = pd.DataFrame(columns=['Date','TimeInterval','RoadSection','Highway','Direction','Midpoint',
+    new_df = pd.DataFrame(columns=['Date','Time','RoadSection','Highway','Direction','Midpoint',
                                'M03A_PCU','M03A_PCU_BigGap','M05A_SpaceMeanSpeed','M05A_PCU'])
     for file_m03a, file_m05a in zip(matching_files_m03a, matching_files_m05a):
         new_df = pd.concat([new_df, get_trafficvolume(file_m03a, file_m05a)], ignore_index=True)
         print(file_m03a, file_m05a)
-    new_df.to_csv('Integrated_data_0101.csv', index=False, encoding='utf-8-sig')
-    print("數據已保存到 'Integrated_data.csv'")
+    #new_df.to_csv('integrated_data_0101.csv', index=False, encoding='utf-8-sig')
+    #print("數據已保存到 'integrated_data.csv'")
 
     # 計算各路段交通量
-    countfile_path = 'Integrated_data_0101.csv'
-    count_trafficvolume(countfile_path)
+    #countfile_path = 'integrated_data_0101.csv'
+    #count_trafficvolume(countfile_path)
 
 
     # 刪除文件
     delete_file('extracted_files')
+
+    return new_df
