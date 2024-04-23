@@ -44,7 +44,12 @@ def get_trafficvolume(m03a_file, m05a_file):
 
     for row in df_dict:
         pcu1, pcu2, speed, pcu_m05a, pcua, pcub = 0, 0, 0, 0, 0, 0
+        
+        # m03a
         for m03a_data in m03a_dict:
+            # 將05FR略過
+            if m03a_data['GantryID'] == '05FR113S' or m03a_data['GantryID'] == '05FR143N':
+                continue     
             if m03a_data['GantryID'] == row['nearest_gantry1']:
                 if m03a_data['VehicleType'] in [41, 42, 5]:
                     pcu1 += m03a_data['TrafficVolume'] * 1.4
@@ -63,8 +68,14 @@ def get_trafficvolume(m03a_file, m05a_file):
             biggap = 1
         else:
             biggap = np.nan
-    
+
+        # m05a
         for m05a_data in m05a_dict:
+            # 將05FR略過
+            if  ( m05a_data['GantryFrom'] == '05FR113S' or m05a_data['GantryTo'] == '05FR113S'
+                or m05a_data['GantryFrom'] == '05FR143N' or m05a_data['GantryTo'] == '05FR143N' ):
+                continue
+
             if (row['roadsection'] == '汐止端-堤頂交流道' and row['direction']== 'S' 
                 and m05a_data['GantryFrom']=='01F0099S' and m05a_data['GantryTo']=='01H0163S'):
                 speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
@@ -72,8 +83,25 @@ def get_trafficvolume(m03a_file, m05a_file):
                     pcua += m05a_data['Traffic'] 
                 else:
                     pcub += m05a_data['Traffic']
-            elif (row['roadsection'] == '中壢轉接道-校前路交流道' and row['direction']== 'N'
+            elif (((row['roadsection'] == '中壢轉接道-校前路交流道') 
+                  or(row['roadsection'] == '校前路交流道-楊梅端')) and row['direction']== 'N'
                   and m05a_data['GantryFrom']=='01F0750N' and m05a_data['GantryTo']=='01H0608N'):
+                speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
+                if m05a_data['VehicleType'] in [41, 42, 5]:
+                    pcua += m05a_data['Traffic'] 
+                else:
+                    pcub += m05a_data['Traffic']
+            elif (((row['roadsection'] == '南州交流道-林邊交流道') 
+                  or(row['roadsection'] == '林邊交流道-大鵬灣端')) and row['direction']== 'N'
+                  and m05a_data['GantryFrom']=='03F4259N' and m05a_data['GantryTo']=='03F4232N'):
+                speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
+                if m05a_data['VehicleType'] in [41, 42, 5]:
+                    pcua += m05a_data['Traffic'] 
+                else:
+                    pcub += m05a_data['Traffic']
+            elif (((row['roadsection'] == '南州交流道-林邊交流道') 
+                  or(row['roadsection'] == '林邊交流道-大鵬灣端')) and row['direction']== 'S'
+                  and m05a_data['GantryFrom']=='03F4232S' and m05a_data['GantryTo']=='03F4263S'):
                 speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
                 if m05a_data['VehicleType'] in [41, 42, 5]:
                     pcua += m05a_data['Traffic'] 
@@ -87,15 +115,8 @@ def get_trafficvolume(m03a_file, m05a_file):
                 else:
                     pcub += m05a_data['Traffic']
             elif row['direction'] == 'S':
-                if (m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'][:3] == '05F'and m05a_data['GantryFrom'].endswith("S") and 
-                    int(m05a_data['GantryFrom'][4:7])/10 <= row['midpoint'] < int(m05a_data['GantryTo'][4:7])/10) :
-                    speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
-                    if m05a_data['VehicleType'] in [41, 42, 5]:
-                        pcua += m05a_data['Traffic'] 
-                    else:
-                        pcub += m05a_data['Traffic']
-                elif(m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'][:3] != '05F' and m05a_data['GantryFrom'].endswith('S') and 
-                    int(m05a_data['GantryFrom'][3:7])/10 <= row['midpoint'] < int(m05a_data['GantryTo'][3:7])/10) :
+                if(m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'].endswith('S') 
+                    and int(m05a_data['GantryFrom'][3:7])/10 <= row['midpoint'] < int(m05a_data['GantryTo'][3:7])/10) :
                     speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
                     if m05a_data['VehicleType'] in [41, 42, 5]:
                         pcua += m05a_data['Traffic'] 
@@ -103,15 +124,8 @@ def get_trafficvolume(m03a_file, m05a_file):
                         pcub += m05a_data['Traffic']
  
             elif row['direction'] == 'N': 
-                if (m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'][:3] == '05F' and m05a_data['GantryFrom'].endswith("N") and 
-                    int(m05a_data['GantryTo'][4:7])/10 <= row['midpoint'] < int(m05a_data['GantryFrom'][4:7])/10) :
-                    speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
-                    if m05a_data['VehicleType'] in [41, 42, 5]:
-                        pcua += m05a_data['Traffic'] 
-                    else:
-                        pcub += m05a_data['Traffic']
-                elif (m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'][:3] != '05F' and m05a_data['GantryFrom'].endswith("N") and 
-                    int(m05a_data['GantryTo'][3:7])/10 <= row['midpoint'] < int(m05a_data['GantryFrom'][3:7])/10) :
+                if (m05a_data['GantryFrom'][:3] == row['nearest_gantry1'][:3] and m05a_data['GantryFrom'].endswith("N") 
+                    and int(m05a_data['GantryTo'][3:7])/10 <= row['midpoint'] < int(m05a_data['GantryFrom'][3:7])/10) :
                     speed += (m05a_data['SpaceMeanSpeed'] * m05a_data['Traffic'])
                     if m05a_data['VehicleType'] in [41, 42, 5]:
                         pcua += m05a_data['Traffic'] 

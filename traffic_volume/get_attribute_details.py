@@ -129,17 +129,18 @@ def gantryID_roadsection_mapping()-> list:
                 highway = gantryID[1:2]
                 csv_file = f"../highway_information/國道{highway}號.csv"
 
-            if gantryID[3:4] == 'R':
-                kilometer = int(gantryID[4:7])/10
+            if gantryID == '05FR113S' or gantryID == '05FR143N':
+                roadsection = f"宜蘭交流道-羅東交流道_(R)"
+                mapping[gantryID] = roadsection
             else:
                 kilometer = int(gantryID[3:7])/10
 
-            df = pd.read_csv(csv_file, encoding='utf-8')
-            for index, row in df.iterrows():      
-                if row['里程K+000'] <= kilometer <= df.iloc[index+1]['里程K+000']:
-                    roadsection = f"{row['設施名稱']}-{ df.iloc[index+1]['設施名稱']}"
-                    if gantryID[2:3] == 'H':
-                        roadsection = roadsection + "(高架)"
+                df = pd.read_csv(csv_file, encoding='utf-8')
+                for index, row in df.iterrows():      
+                    if row['里程K+000'] <= kilometer <= df.iloc[index+1]['里程K+000']:
+                        roadsection = f"{row['設施名稱']}-{ df.iloc[index+1]['設施名稱']}"
+                        if gantryID[2:3] == 'H':
+                            roadsection = roadsection + "(高架)"
                     
                     mapping[gantryID] = roadsection
                      

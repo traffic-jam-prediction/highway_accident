@@ -80,6 +80,9 @@ def get_gantrid():
         data = json.load(file)
     gantryID = []
     for key, value in data["RoadSection"].items():
+        # 將05FR略過
+        if key == '05FR113S' or key == '05FR143N':
+            continue
         gantryID.append(key)
     return gantryID
 
@@ -159,7 +162,7 @@ def find_nearest_detection_points():
             distances = []
             for gid in get_gantrid():
                 if gid[:3] == '05F'and gid.endswith("S"):  
-                    distance = abs(row['midpoint'] - int(gid[4:7])/10)
+                    distance = abs(row['midpoint'] - int(gid[3:7])/10)
                     distances.append((gid, distance))
             distances.sort(key=lambda x: x[1])
             nearest_two = distances[:2] if len(distances) >= 2 else None
@@ -170,7 +173,7 @@ def find_nearest_detection_points():
             distances = []
             for gid in get_gantrid():
                 if gid[:3] == '05F'and gid.endswith("N"):  
-                    distance = abs(row['midpoint'] - int(gid[4:7])/10)
+                    distance = abs(row['midpoint'] - int(gid[3:7])/10)
                     distances.append((gid, distance))
             distances.sort(key=lambda x: x[1])
             nearest_two = distances[:2] if len(distances) >= 2 else None
@@ -178,8 +181,8 @@ def find_nearest_detection_points():
                 df.at[index, 'nearest_gantry1'] = nearest_two[0][0]  
                 df.at[index, 'nearest_gantry2'] = nearest_two[1][0]    
 
-    #df.to_csv('../highway_information/roadsectiondata_with_nearest.csv', encoding='utf-8-sig', index=False)
-    #print("roadsection_with_nearest.csv已儲存")
+    df.to_csv('../highway_information/roadsectiondata_with_nearest.csv', encoding='utf-8-sig', index=False)
+    print("roadsection_with_nearest.csv已儲存")
     return(df)
 
 
