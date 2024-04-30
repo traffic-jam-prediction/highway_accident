@@ -181,8 +181,8 @@ def find_nearest_detection_points():
                 df.at[index, 'nearest_gantry1'] = nearest_two[0][0]  
                 df.at[index, 'nearest_gantry2'] = nearest_two[1][0]    
 
-    df.to_csv('../highway_information/roadsectiondata_with_nearest.csv', encoding='utf-8-sig', index=False)
-    print("roadsection_with_nearest.csv已儲存")
+    #df.to_csv('../highway_information/roadsectiondata_with_nearest.csv', encoding='utf-8-sig', index=False)
+    #print("roadsection_with_nearest.csv已儲存")
     return(df)
 
 
