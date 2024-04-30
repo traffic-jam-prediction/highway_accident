@@ -96,6 +96,7 @@ def get_trafficvolume(m03a_file, m05a_file):
                     else:
                         pcub += m05a_data['Traffic']
         pcu_m05a = pcua * 1.4 + pcub
+
         if pcua + pcub ==0:
             continue
         else:
@@ -159,6 +160,8 @@ def find_matching_files(root_dir, prefix, date):
                 matching_files.append(os.path.join(root, file))
     return matching_files
 
+
+#def integrated_forecastdata():
 if __name__ == '__main__':
     with open('traffic_volume_attributes.json', 'r', encoding='utf-8') as file:
         mapping = json.load(file)
@@ -200,8 +203,9 @@ if __name__ == '__main__':
     for file_m03a, file_m05a in zip(matching_files_m03a, matching_files_m05a):
         new_df = pd.concat([new_df, get_trafficvolume(file_m03a, file_m05a)], ignore_index=True)
         print(file_m03a, file_m05a)
-    new_df.to_csv('trafficvolume_0101.csv', index=False, encoding='utf-8-sig')
-    print("數據已保存到 'trafficvolume.csv'")
+
+    new_df.to_csv('integrated_data_0101.csv', index=False, encoding='utf-8-sig')
+    print("數據已保存到 'integrated_data.csv'")
 
     # 計算各路段交通量
     countfile_path = 'trafficvolume_0101.csv'
@@ -210,3 +214,5 @@ if __name__ == '__main__':
 
     # 刪除文件
     delete_file('extracted_files')
+
+    #return new_df
