@@ -10,3 +10,7 @@ def read_json_file(file_name: str):
 def write_json_to_file(file_name: str, json_content: dict):
     with open(file=file_name, mode='w', encoding="utf-8") as file:
         json.dump(json_content, file, indent=2, ensure_ascii=False)
+
+def write_list_to_file(file_name: str, list_content: list):
+    with open(file=file_name, mode='w', encoding="utf-8") as file:
+        json.dump(list_content, file, indent=2, ensure_ascii=False)
