@@ -6,6 +6,7 @@ from typing import List
 from tdx_api import get_data, get_data_and_save_to_json
 from location import get_mileage_GPS, haversine_distance
 from file import write_json_to_file, read_json_file, write_list_to_file
+from database import add_data
 
 
 class WeatherStationType(Enum):
@@ -204,6 +205,6 @@ if __name__ == "__main__":
             for road_section in road_section_list:
                 weather = get_weather(
                     current_date, time_string, road_section.highway_name, road_section.mileage)
-                print(
-                    f'{current_date.isoformat()} {time_string} {road_section.highway_name} {road_section.mileage} {weather}')
+                add_data(current_date.isoformat(), current_time.isoformat(), road_section.highway_name,
+                         road_section.mileage, weather['WDSD'], weather['Temp'], weather['HUMD'], weather['PRES'])
         current_date += timedelta(days=1)
