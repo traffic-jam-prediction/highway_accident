@@ -13,6 +13,14 @@ To get weather, you need a pair of app_id and app_key, and save it to tdx_creden
 
 ## save to database
 
+### requirements
+
+You need the mysql.connector library
+
+```bash
+pip install mysql.connector
+```
+
 ### SQL authentication
 
 - create a json file named ```database_authentication.json``` with the following data
