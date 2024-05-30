@@ -142,7 +142,7 @@ def get_trafficvolume(m03a_file, m05a_file):
         else:
             speed = round(speed/( pcua + pcub ),1)
         date, time = m03a_data['TimeInterval'].split(' ')
-        date = datetime.strptime(date, '%Y-%m-%d')
+        time = datetime.strptime(time, '%H:%M').strftime('%H:%M:%S')
         if new_df.empty:
             new_df = pd.DataFrame({'Date':[date],'Time': [time],'RoadSection':row['roadsection'],
                                    'Highway':row['highway'],'Direction':row['direction'], 'Midpoint':row['midpoint'],
@@ -163,22 +163,32 @@ def get_trafficvolume(m03a_file, m05a_file):
         
     return new_df
 
-def count_trafficvolume(countfile_path):
-    # 為了保留原始資料路段的排序順序(才能呈現由北到南的順序)
-    data1 = find_nearest_detection_points()
-    original_order = data1['roadsection'].unique().tolist()
-    
-    count_file = pd.DataFrame(columns=['RoadSection','Direction','M03A_PCU'])
-    data2 = pd.read_csv(countfile_path)
-    for (road_section, direction), group_data in data2.groupby(['RoadSection', 'Direction']):
-        count_pcu = group_data['M03A_PCU'].sum()
-        RoadSection = group_data['RoadSection'].values[0] 
-        Direction = group_data['Direction'].values[0]
-        count_file = pd.concat([count_file, pd.DataFrame({'RoadSection': [RoadSection],'Direction':[Direction],'M03A_PCU':[count_pcu]})])
-    
-    count_file = count_file.sort_values(by=['RoadSection'], key=lambda x: x.map({v: i for i, v in enumerate(original_order)}))
-    count_file.to_csv('count_file.csv', index=False, encoding='utf-8-sig')
-    print("數據已保存到 'count_file.csv'")
+def get_accident(main_df):
+    accident1_df = pd.read_csv('../accident_road/accident1_info.csv')
+    accident2_df = pd.read_csv('../accident_road/accident2_info.csv')
+    accident3_df = pd.read_csv('../accident_road/accident3_info.csv')
+    accident_merge = pd.concat([accident1_df, accident2_df, accident3_df], ignore_index=True)
+
+    accident_count = accident_merge.groupby(['Date', 'Time', 'RoadSection', 'Highway', 'Direction']).size().reset_index(name='Count')
+
+    merged_df = pd.merge(main_df, accident_count, on=['Date', 'Time', 'RoadSection', 'Highway', 'Direction'], how='left')
+    merged_df['Count'] = merged_df['Count'].fillna(0)
+
+    return merged_df
+
+def mark_holiday(date):
+    holiday_str = ['2023-01-01', '2023-01-02', '2023-01-07', '2023-01-08', '2023-01-14', '2023-01-15', '2023-01-20', '2023-01-21', '2023-01-22', '2023-01-23',
+            '2023-01-24', '2023-01-25', '2023-01-26', '2023-01-27', '2023-02-11', '2023-02-12', '2023-02-19', '2023-02-25', '2023-02-26', '2023-02-27',
+            '2023-02-28', '2023-03-04', '2023-03-05', '2023-03-11', '2023-03-12', '2023-03-18', '2023-03-19', '2023-03-26', '2023-04-01', '2023-04-02',
+            '2023-04-03', '2023-04-04', '2023-04-05', '2023-04-08', '2023-04-09', '2023-04-15', '2023-04-16', '2023-04-22', '2023-04-23', '2023-04-29', 
+            '2023-04-30', '2023-05-06', '2023-05-07', '2023-05-13', '2023-05-14', '2023-05-20', '2023-05-21', '2023-05-27', '2023-05-28', '2023-06-03', 
+            '2023-06-04', '2023-06-10', '2023-06-11', '2023-06-18', '2023-06-22', '2023-06-23', '2023-06-24', '2023-06-25', '2023-07-01', '2023-07-02', 
+            '2023-07-08', '2023-07-09', '2023-07-15', '2023-07-16', '2023-07-22', '2023-07-23', '2023-07-29', '2023-07-30', '2023-08-05', '2023-08-06', 
+            '2023-08-12', '2023-08-13', '2023-08-19', '2023-08-20', '2023-08-26', '2023-08-27', '2023-09-02', '2023-09-03', '2023-09-09', '2023-09-10', 
+            '2023-09-16', '2023-09-17', '2023-09-24', '2023-09-29', '2023-09-30', '2023-10-01', '2023-10-07', '2023-10-08', '2023-10-09', '2023-10-10',
+            '2023-10-14', '2023-10-15', '2023-10-21', '2023-10-22', '2023-10-28', '2023-10-29'
+               ]
+    return 1 if date in holiday_str else np.nan
 
 def delete_file(file_name):
     try:
@@ -203,7 +213,7 @@ def find_matching_files(root_dir, prefix, date):
                 matching_files.append(os.path.join(root, file))
     return matching_files
 
-#def integrated_forecastdata():
+# def integrated_forecastdata():
 if __name__ == '__main__':
     with open('traffic_volume_attributes.json', 'r', encoding='utf-8') as file:
         mapping = json.load(file)
@@ -245,15 +255,18 @@ if __name__ == '__main__':
     for file_m03a, file_m05a in zip(matching_files_m03a, matching_files_m05a):
         new_df = pd.concat([new_df, get_trafficvolume(file_m03a, file_m05a)], ignore_index=True)
         print(file_m03a, file_m05a)
-    new_df.to_csv('integrated_data_0101.csv', index=False, encoding='utf-8-sig')
-    print("數據已保存到 'integrated_data.csv'")
 
-    # 計算各路段交通量
-    #countfile_path = 'integrated_data_0101.csv'
-    #count_trafficvolume(countfile_path)
+    new_df = get_accident(new_df)
+    new_df['Holiday'] = new_df['Date'].apply(mark_holiday)
+    new_df['Week'] = pd.to_datetime(new_df['Date'], format='%Y-%m-%d').dt.day_name()
 
+    new_df['DateTime'] = pd.to_datetime(new_df['Date'] + ' ' + new_df['Time'], format='%Y-%m-%d %H:%M:%S').dt.strftime('%Y-%m-%d %H:%M:%S')
+    new_df.drop(['Date', 'Time'], axis=1, inplace=True)
+    new_df = new_df[['DateTime'] + new_df.columns[:-1].tolist()]  
+    # new_df.to_csv('test_06.csv', encoding='utf-8-sig', index=False)
+    # print("數據已保存到 'test_06.csv'")
 
     # 刪除文件
     delete_file('extracted_files')
 
-    #return new_df
+    # return new_df
