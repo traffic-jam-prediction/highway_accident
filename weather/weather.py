@@ -218,11 +218,12 @@ if __name__ == "__main__":
         current_time = start_time
         while current_time <= end_time:
             time_string = current_time.strftime("%H:%M")
-            current_time = next_time(current_time)
+            
             # road section loop
             for road_section in road_section_list:
                 weather = get_weather(
                     current_date, time_string, road_section.highway_name, road_section.mileage)
                 add_data(current_date.isoformat(), current_time.isoformat(), road_section.highway_name,
                          road_section.mileage, weather['WDSD'], weather['Temp'], weather['HUMD'], weather['PRES'])
+            current_time = next_time(current_time)
         current_date += timedelta(days=1)
