@@ -66,7 +66,7 @@ def get_weather_for_date(target_date: date):
         return read_json_file(file_path)
 
 
-def find_closest_station_weather(weather_data: list, mileage_position:tuple) -> int:
+def find_closest_station_weather(weather_data: list, mileage_position: tuple) -> int:
     shortest_distance = float("inf")
     for index, weather in enumerate(weather_data):
         weather_station_position = (weather["Lat"], weather["Lon"])
@@ -84,12 +84,22 @@ def find_closest_station_weather(weather_data: list, mileage_position:tuple) -> 
     return closest_weather
 
 
+def find_first_weather(weather_data: list) -> dict:
+    first_index = None
+    for index, weather in enumerate(weather_data):
+        minutes = weather_to_minutes(weather)
+        if first_index == None or minutes < weather_to_minutes(weather_data[first_index]):
+            first_index = index
+    return weather_data[first_index]
+
+
 def get_weather(target_date: date, time_string: str, highway_name: str, mileage: float):
     road_section_position = get_road_section_position()
     mileage_position = road_section_position[highway_name][str(mileage)]
 
     weather_data = get_weather_for_date(target_date)
-    closest_weather =find_closest_station_weather(weather_data, mileage_position)
+    closest_weather = find_closest_station_weather(
+        weather_data, mileage_position)
 
     # filter weather to the closest time
     target_minute = time_to_minutes(time_string)
@@ -102,8 +112,18 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
             after_index = index
         if current_minute <= target_minute and (before_index is None or current_minute > weather_to_minutes(closest_weather[before_index])):
             before_index = index
+
+    after_weather = None
+    if after_index == None:
+        tomorrow_weather = get_weather_for_date(
+            target_date + timedelta(days=1))
+        tomorrow_closest_weather = find_closest_station_weather(
+            weather_data, mileage_position)
+        after_weather = find_first_weather(tomorrow_closest_weather)
+    else:
+        after_weather = closest_weather[after_index]
     target_weather = [closest_weather[before_index],
-                      closest_weather[after_index]]
+                      after_weather]
 
     # interpolation
     target_time_weather = dict()
