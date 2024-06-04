@@ -42,20 +42,12 @@ def interpolation(time_1: int, value_1: float, time_2: int,  time_3: int, value_
     return value_2
 
 
-def get_weather_json_path(target_date: date) -> str:
-    date_string = target_date.isoformat()
-    year = target_date.year
-    month = target_date.month
-    file_path = f'history/{year}/{month}/{date_string}.json'
-    return file_path
-
-
 def get_weather_for_date(target_date: date):
     date_string = target_date.isoformat()
     year = target_date.year
     month = target_date.month
     folder_path = f'history/{year}/{month}'
-    json_file_path = get_weather_json_path(target_date)
+    json_file_path = f'{folder_path}/{date_string}.json'
     if not os.path.exists(json_file_path):
         # get data from api
         weather_data = list()
@@ -69,6 +61,9 @@ def get_weather_for_date(target_date: date):
         # save to file
         os.makedirs(folder_path, exist_ok=True)
         write_json_to_file(json_file_path, weather_data)
+    else:
+        file_path = f'history/{year}/{month}/{date_string}.json'
+        return read_json_file(file_path)
 
 
 def get_weather(target_date: date, time_string: str, highway_name: str, mileage: float):
@@ -76,8 +71,7 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
     mileage_position = road_section_position[highway_name][str(mileage)]
 
     # filter weather based on the closest station
-    weather_data_path = get_weather_json_path(target_date)
-    weather_data = read_json_file(weather_data_path)
+    weather_data = get_weather_for_date(target_date)
     shortest_distance = float("inf")
     for index, weather in enumerate(weather_data):
         weather_station_position = (weather["Lat"], weather["Lon"])
@@ -188,7 +182,7 @@ def get_road_section_position() -> dict:
 if __name__ == "__main__":
     start_date = date(2023, 1, 1)
     end_date = date(2023, 10, 31)
-    get_weather_for_date_range(start_date, end_date)
+    #get_weather_for_date_range(start_date, end_date)
     road_section_list = get_road_sections()
 
     # date loop
