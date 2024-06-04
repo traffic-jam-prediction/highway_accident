@@ -66,12 +66,7 @@ def get_weather_for_date(target_date: date):
         return read_json_file(file_path)
 
 
-def get_weather(target_date: date, time_string: str, highway_name: str, mileage: float):
-    road_section_position = get_road_section_position()
-    mileage_position = road_section_position[highway_name][str(mileage)]
-
-    # filter weather based on the closest station
-    weather_data = get_weather_for_date(target_date)
+def find_closest_station_weather(weather_data: list, mileage_position:tuple) -> int:
     shortest_distance = float("inf")
     for index, weather in enumerate(weather_data):
         weather_station_position = (weather["Lat"], weather["Lon"])
@@ -86,6 +81,15 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
         current_station_id = weather["StationID"]
         if current_station_id == closest_station_id:
             closest_weather.append(weather)
+    return closest_weather
+
+
+def get_weather(target_date: date, time_string: str, highway_name: str, mileage: float):
+    road_section_position = get_road_section_position()
+    mileage_position = road_section_position[highway_name][str(mileage)]
+
+    weather_data = get_weather_for_date(target_date)
+    closest_weather =find_closest_station_weather(weather_data, mileage_position)
 
     # filter weather to the closest time
     target_minute = time_to_minutes(time_string)
@@ -182,7 +186,7 @@ def get_road_section_position() -> dict:
 if __name__ == "__main__":
     start_date = date(2023, 1, 1)
     end_date = date(2023, 10, 31)
-    #get_weather_for_date_range(start_date, end_date)
+    # get_weather_for_date_range(start_date, end_date)
     road_section_list = get_road_sections()
 
     # date loop
