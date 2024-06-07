@@ -39,7 +39,7 @@ def interpolation(time_1: int, value_1: float, time_2: int,  time_3: int, value_
     value_total_distance = value_3 - value_1
     value_2 = value_base + value_total_distance * \
         time_distance_between_1_and_2/time_total_distance
-    return value_2
+    return round(value_2, 3)
 
 
 def get_weather_for_date(target_date: date):
@@ -218,12 +218,11 @@ if __name__ == "__main__":
         current_time = start_time
         while current_time <= end_time:
             time_string = current_time.strftime("%H:%M")
-            
             # road section loop
             for road_section in road_section_list:
                 weather = get_weather(
                     current_date, time_string, road_section.highway_name, road_section.mileage)
                 add_data(current_date.isoformat(), current_time.isoformat(), road_section.highway_name,
-                         road_section.mileage, weather['WDSD'], weather['Temp'], weather['HUMD'], weather['PRES'])
+                      road_section.mileage, weather['WDSD'], weather['Temp'], weather['HUMD'], weather['PRES'])
             current_time = next_time(current_time)
         current_date += timedelta(days=1)
