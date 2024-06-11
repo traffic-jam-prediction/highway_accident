@@ -8,6 +8,8 @@ from location import get_mileage_GPS, haversine_distance
 from file import write_json_to_file, read_json_file, write_list_to_file
 from database import add_data
 
+VALUE_NOT_FOUND = -99.0
+
 
 class WeatherStationType(Enum):
     automatic_weather_station = "AWS"
@@ -31,15 +33,23 @@ def weather_to_minutes(weather: dict) -> int:
 
 
 def interpolation(time_1: int, value_1: float, time_2: int,  time_3: int, value_3: float) -> float:
-    if time_1 == time_2:
+    if time_1 == time_3:
         return value_1
-    time_distance_between_1_and_2 = time_2 - time_1
-    time_total_distance = time_3 - time_1
-    value_base = value_1
-    value_total_distance = value_3 - value_1
-    value_2 = value_base + value_total_distance * \
-        time_distance_between_1_and_2/time_total_distance
-    return round(value_2, 3)
+    
+    if value_1 == VALUE_NOT_FOUND and value_3 == VALUE_NOT_FOUND:
+        return VALUE_NOT_FOUND
+    elif value_3 == VALUE_NOT_FOUND:
+        return value_1
+    elif value_1 == VALUE_NOT_FOUND:
+        return value_3
+    else:
+        time_distance_between_1_and_2 = time_2 - time_1
+        time_total_distance = time_3 - time_1
+        value_base = value_1
+        value_total_distance = value_3 - value_1
+        value_2 = value_base + value_total_distance * \
+            time_distance_between_1_and_2/time_total_distance
+        return round(value_2, 3)
 
 
 def get_weather_for_date(target_date: date):
@@ -135,6 +145,8 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
         end_time = weather_to_minutes(end_weather)
         value = interpolation(
             time_1=start_time, value_1=start_weather[attribute], time_2=target_minute, time_3=end_time, value_3=end_weather[attribute])
+        if (int(value) == -99):
+            value = int(-99)
         target_time_weather[attribute] = value
     return target_time_weather
 
