@@ -18,7 +18,7 @@ To get weather, you need a pair of app_id and app_key, and save it to tdx_creden
 You need the mysql.connector library
 
 ```bash
-pip install mysql.connector
+pip install mysql.connector haversine
 ```
 
 ### SQL authentication
