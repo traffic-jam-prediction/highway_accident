@@ -35,7 +35,7 @@ def weather_to_minutes(weather: dict) -> int:
 def interpolation(time_1: int, value_1: float, time_2: int,  time_3: int, value_3: float) -> float:
     if time_1 == time_3:
         return value_1
-    
+
     if value_1 == VALUE_NOT_FOUND and value_3 == VALUE_NOT_FOUND:
         return VALUE_NOT_FOUND
     elif value_3 == VALUE_NOT_FOUND:
@@ -137,7 +137,7 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
 
     # interpolation
     target_time_weather = dict()
-    required_attributes = ["WDSD", "Temp", "HUMD", "PRES"]
+    required_attributes = ["WDSD", "WDIR", "Temp", "HUMD", "PRES"]
     for attribute in required_attributes:
         start_weather = target_weather[0]
         end_weather = target_weather[1]
@@ -180,6 +180,8 @@ class RoadSection:
 
 def get_road_sections() -> List[RoadSection]:
     road_section_list = []
+    previous_highway = None
+    previous_mileage = None
     with open('roadsectiondata_with_nearest.csv', 'r') as csvfile:
         csvreader = csv.reader(csvfile)
         attributes = next(csvreader)
@@ -190,8 +192,12 @@ def get_road_sections() -> List[RoadSection]:
             if highway == "國道1號_高架":
                 continue
             mileage = float(row[mileage_index])
+            if highway == previous_highway and mileage == previous_mileage:
+                continue
             new_road_section = RoadSection(highway, mileage)
             road_section_list.append(new_road_section)
+            previous_highway = highway
+            previous_mileage = mileage
     return road_section_list
 
 
@@ -234,7 +240,7 @@ if __name__ == "__main__":
             for road_section in road_section_list:
                 weather = get_weather(
                     current_date, time_string, road_section.highway_name, road_section.mileage)
-                add_data(current_date.isoformat(), current_time.isoformat(), road_section.highway_name,
-                      road_section.mileage, weather['WDSD'], weather['Temp'], weather['HUMD'], weather['PRES'])
+                add_data(f'{current_date.isoformat()} {current_time.isoformat()}', road_section.highway_name,
+                         road_section.mileage, weather['WDSD'], weather['WDIR'], weather['Temp'], weather['HUMD'], weather['PRES'])
             current_time = next_time(current_time)
         current_date += timedelta(days=1)

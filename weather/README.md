@@ -44,14 +44,13 @@ USE highway;
 
 ```sql
 CREATE TABLE weather (
-    date DATE,
-    time TIME,
-    highway VARCHAR(10),
+    datetime DATETIME,
+    highway VARCHAR(10) CHARACTER SET utf8mb4,
     mileage DOUBLE,
-    WDSD DOUBLE,
-    Temp DOUBLE,
-    HUMD DOUBLE,
-    PRES DOUBLE
+    WindSpeed DOUBLE,
+    WindDirection DOUBLE,
+    Temperature DOUBLE,
+    Humidity DOUBLE,
+    Pressure DOUBLE
 );
-ALTER TABLE weather MODIFY COLUMN highway VARCHAR(10) CHARACTER SET utf8mb4;
 ```

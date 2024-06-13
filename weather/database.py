@@ -9,7 +9,7 @@ def get_username_and_password() -> tuple:
     return username, password
 
 
-def add_data(date: str, time: str, highway: str, mileage: float, wind_speed: float, temperature: float, humidity: float, pressure: float):
+def add_data(datetime: str, highway: str, mileage: float, wind_speed: float, wind_direction: float, temperature: float, humidity: float, pressure: float):
     connection = database.connect(
         user=username,
         password=password,
@@ -17,8 +17,8 @@ def add_data(date: str, time: str, highway: str, mileage: float, wind_speed: flo
         database="highway")
     cursor = connection.cursor()
     try:
-        statement = "INSERT INTO weather (date, time, highway, mileage, WDSD, Temp, HUMD, PRES) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        data = (date, time, highway, mileage, wind_speed,
+        statement = "INSERT INTO weather (datetime, highway, mileage, WindSpeed, WindDirection, Temperature, Humidity, Pressure) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        data = (datetime, highway, mileage, wind_speed, wind_direction,
                 temperature, humidity, pressure)
         cursor.execute(statement, data)
         connection.commit()
