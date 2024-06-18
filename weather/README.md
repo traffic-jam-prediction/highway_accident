@@ -51,7 +51,6 @@ CREATE TABLE weather (
     WindDirection DOUBLE,
     Temperature DOUBLE,
     Humidity DOUBLE,
-    Pressure DOUBLE,
     UNIQUE (datetime, highway, mileage)
 );
 ```
