@@ -125,10 +125,10 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
 
     after_weather = None
     if after_index == None:
-        tomorrow_weather = get_weather_for_date(
+        tomorrow_weather_data = get_weather_for_date(
             target_date + timedelta(days=1))
         tomorrow_closest_weather = find_closest_station_weather(
-            weather_data, mileage_position)
+            tomorrow_weather_data, mileage_position)
         after_weather = find_first_weather(tomorrow_closest_weather)
     else:
         after_weather = closest_weather[after_index]
@@ -182,7 +182,7 @@ def get_road_sections() -> List[RoadSection]:
     road_section_list = []
     previous_highway = None
     previous_mileage = None
-    with open('roadsectiondata_with_nearest.csv', 'r' ,encoding='utf-8') as csvfile:
+    with open('roadsectiondata_with_nearest.csv', 'r', encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile)
         attributes = next(csvreader)
         highway_index = attributes.index('highway')
