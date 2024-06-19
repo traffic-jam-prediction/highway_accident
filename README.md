@@ -5,7 +5,7 @@
 # accident_road
 
 [國道1號.csv](https://www.freeway.gov.tw/Download_File_Direct.ashx?id=525&FileConditionsID=1)
-高雄端由373->374
+高雄端由373->374(經緯度也有改)
 
 [國道1號_h.csv](https://www.freeway.gov.tw/Download_File_Direct.ashx?id=526&FileConditionsID=1)
 將里程的高架移除
