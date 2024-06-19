@@ -103,6 +103,15 @@ def find_first_weather(weather_data: list) -> dict:
     return weather_data[first_index]
 
 
+def find_last_weather(weather_data: list) -> dict:
+    last_index = None
+    for index, weather in enumerate(weather_data):
+        minutes = weather_to_minutes(weather)
+        if last_index == None or minutes > weather_to_minutes(weather_data[last_index]):
+            last_index = index
+    return weather_data[last_index]
+
+
 def get_weather(target_date: date, time_string: str, highway_name: str, mileage: float):
     road_section_position = get_road_section_position()
     mileage_position = road_section_position[highway_name][str(mileage)]
@@ -123,6 +132,7 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
         if current_minute <= target_minute and (before_index is None or current_minute > weather_to_minutes(closest_weather[before_index])):
             before_index = index
 
+    # handle the situation when the closest weather station only has weather before the target time
     after_weather = None
     if after_index == None:
         tomorrow_weather_data = get_weather_for_date(
@@ -132,7 +142,17 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
         after_weather = find_first_weather(tomorrow_closest_weather)
     else:
         after_weather = closest_weather[after_index]
-    target_weather = [closest_weather[before_index],
+    # handle the situation when the closest weather station only has weather after the target time
+    before_weather = None
+    if before_index == None:
+        yesterday_weather_data = get_weather_for_date(
+            target_date - timedelta(days=1))
+        yesterday_closest_weather = find_closest_station_weather(
+            yesterday_weather_data, mileage_position)
+        before_weather = find_last_weather(yesterday_closest_weather)
+    else:
+        before_weather = closest_weather[before_index]
+    target_weather = [before_weather,
                       after_weather]
 
     # interpolation
