@@ -157,7 +157,7 @@ def get_weather(target_date: date, time_string: str, highway_name: str, mileage:
 
     # interpolation
     target_time_weather = dict()
-    required_attributes = ["WDSD", "WDIR", "Temp", "HUMD"]
+    required_attributes = ["WDSD", "Temp", "HUMD"]
     for attribute in required_attributes:
         start_weather = target_weather[0]
         end_weather = target_weather[1]
@@ -262,7 +262,7 @@ if __name__ == "__main__":
                 weather = get_weather(
                     current_date, time_string, road_section.highway_name, road_section.mileage)
                 add_data(f'{current_date.isoformat()} {current_time.isoformat()}', road_section.highway_name,
-                         road_section.mileage, weather['WDSD'], weather['WDIR'], weather['Temp'], weather['HUMD'])
+                         road_section.mileage, weather['WDSD'], weather['Temp'], weather['HUMD'])
             print(current_time)
             current_time = next_time(current_time)
         current_date += timedelta(days=1)

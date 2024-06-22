@@ -48,7 +48,6 @@ CREATE TABLE weather (
     highway VARCHAR(10) CHARACTER SET utf8mb4,
     mileage DOUBLE,
     WindSpeed DOUBLE,
-    WindDirection DOUBLE,
     Temperature DOUBLE,
     Humidity DOUBLE,
     UNIQUE (datetime, highway, mileage)
