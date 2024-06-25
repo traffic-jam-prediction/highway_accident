@@ -4,33 +4,26 @@ test.csv
 test1.csv
 test2.csv
 count_file.csv
-<<<<<<< HEAD
 trafficvolume_0101.csv
 trafficvolume.csv
 extracted_files
 roadsectiondata_with_nearest.csv
-=======
 roadsectiondata_with_nearest_old.csv
 integrated_data_0101_old.csv
 extracted_files
 trafficvolume.csv
 
->>>>>>> 7e505e5 (Docs : Changes based on the code)
 __pycache__
 
 A1_accident.csv
 A2_accident.csv
 #2023	1	19	13	49	0	A2	苗栗縣	銅鑼鄉	國道1號	136	400	136.4	中分局	苗栗工務段	南側	內側
 #高架?
-
 A3_accident.csv
-#2023	4	30	18	3	14	A3	高雄市	路竹區	國道1號	388	100	388.1	
-#將388改為338
-#https://zh.wikipedia-on-ipfs.org/wiki/%E8%B7%AF%E7%AB%B9%E4%BA%A4%E6%B5%81%E9%81%93
 
-#2023	8	7	12	45	53	A3	新北市	林口區	國道1號	414	0	414	南分局
-#414改為41
-
+A1_accident.xlsx
+A2_accident.xlsx
+A3_accident.xlsx
 
 
 # traffic_volume folder
