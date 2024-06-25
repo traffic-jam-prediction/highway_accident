@@ -3,9 +3,9 @@ import json
 import re
 import requests
 import os
+import pandas as pd
 
 pdf_file_path = 'TDCS使用手冊v34.pdf'
-
 
 def download_documentation_pdf():
     documentation_url = "https://tisvcloud.freeway.gov.tw/documents/TDCS%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8Av34.pdf"
@@ -18,7 +18,6 @@ def download_documentation_pdf():
         raise Exception(
             f"Failed to download the documentation. Status code: {response.status_code}")
 
-
 def delete_file(file_path):
     try:
         os.remove(file_path)
@@ -28,7 +27,6 @@ def delete_file(file_path):
         print(f"Permission error. Unable to delete file: {file_path}")
     except Exception as e:
         print(f"An error occurred: {e}")
-
 
 def read_pdf(file_path):
     doc = fitz.open(file_path)
@@ -48,7 +46,6 @@ def extract_GantryID_table(pdf_text: str) -> list:
     table_list = table_text.split("\n")
     return table_list
 
-
 def extract_M03A_attributes(pdf_text: str) -> str:
     m03A_paragraph_index = pdf_text.find("報表代號：M03A")
     m04A_paragraph_index = pdf_text.find("報表代號：M04A")
@@ -67,6 +64,7 @@ def get_alphabet_index(string: str) -> list:
 
 gantryID_example = "05F0287S"
 gantryID_example_length = len(gantryID_example)
+
 
 
 def is_valid_gantryID(gantryID: str) -> bool:
@@ -103,6 +101,9 @@ def extract_gantryID_from_table(table: list) -> list:
         if text == "":
             continue
         if is_valid_gantryID(text):
+            # 2023交通部給的偵測站代碼為339，2024才改為340
+            if text == '01F0340N':
+                text='01F0339N' 
             gantryID_list.append(text)
         elif is_valid_road_segment(text):
             continue
@@ -113,10 +114,41 @@ def extract_gantryID_from_table(table: list) -> list:
     return gantryID_list
 
 
-def get_gantryID_list() -> list:
+
+def gantryID_roadsection_mapping()-> list:
     table = extract_GantryID_table(pdf_text)
     gantryID_list = extract_gantryID_from_table(table)
-    return gantryID_list
+
+    mapping = {}
+    for gantryID in gantryID_list: 
+        first_three_digits = gantryID[:3]
+        if first_three_digits in ['01F','01H','03F','05F']:
+            if gantryID[2:3] == 'H':
+                 csv_file = f"../highway_information/國道1號_高架.csv"
+            else:
+                highway = gantryID[1:2]
+                csv_file = f"../highway_information/國道{highway}號.csv"
+
+            if gantryID[3:4] == 'R':
+                kilometer = int(gantryID[4:7])/10
+            else:
+                kilometer = int(gantryID[3:7])/10
+
+            df = pd.read_csv(csv_file, encoding='utf-8')
+            for index, row in df.iterrows():      
+                if row['里程K+000'] <= kilometer <= df.iloc[index+1]['里程K+000']:
+                    roadsection = f"{row['設施名稱']}-{ df.iloc[index+1]['設施名稱']}"
+                    if gantryID[2:3] == 'H':
+                        roadsection = roadsection + "(高架)"
+                    
+                    mapping[gantryID] = roadsection
+                     
+        else:
+            continue
+    
+    return mapping
+
+
 
 
 def get_direction(attributes_text: str) -> dict:
@@ -179,9 +211,9 @@ if __name__ == '__main__':
     download_documentation_pdf()
     pdf_text = read_pdf(pdf_file_path)
     attribute_detail = dict()
-    # gantryID
-    gantryID = get_gantryID_list()
-    attribute_detail["GantryID"] = gantryID
+    # RoadSection
+    RoadSection = gantryID_roadsection_mapping()
+    attribute_detail["RoadSection"] = RoadSection
     # direction and vehicle type
     M03A_attributes_text = extract_M03A_attributes(pdf_text)
     direction = get_direction(M03A_attributes_text)
@@ -195,3 +227,4 @@ if __name__ == '__main__':
                   indent=2, ensure_ascii=False)
 
     delete_file(pdf_file_path)
+    print("數據已保存到 'traffic_volume_attributes.json'")
