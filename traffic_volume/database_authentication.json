@@ -1,0 +1,7 @@
+{
+    "username": "DATABASE_USER_NAME", 
+    "password": "DATABASE_USER_PASSWORD",
+    "host": "localhost",
+    "port": 3306,
+    "database": "traffic_volume"
+}
