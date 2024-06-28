@@ -213,8 +213,8 @@ def find_matching_files(root_dir, prefix, date):
                 matching_files.append(os.path.join(root, file))
     return matching_files
 
-# def integrated_forecastdata():
-if __name__ == '__main__':
+def integrated_forecastdata():
+# if __name__ == '__main__':
     with open('traffic_volume_attributes.json', 'r', encoding='utf-8') as file:
         mapping = json.load(file)
 
@@ -269,4 +269,4 @@ if __name__ == '__main__':
     # 刪除文件
     delete_file('extracted_files')
 
-    # return new_df
+    return new_df
