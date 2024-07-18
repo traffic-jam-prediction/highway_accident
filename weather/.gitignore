@@ -1,4 +1,4 @@
 tdx_credentials.json
 auth_response.json
 history/
-database_authentication.json
+.env
