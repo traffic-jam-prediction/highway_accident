@@ -16,7 +16,7 @@ def add_data(datetime: str, highway: str, mileage: float, wind_speed: float, tem
         database="highway")
     cursor = connection.cursor()
     try:
-        statement = "INSERT INTO weather (datetime, highway, mileage, WindSpeed, Temperature, Humidity) VALUES (%s, %s, %s, %s, %s, %s)"
+        statement = "INSERT INTO weather (Datetime, Highway, Mileage, WindSpeed, Temperature, Humidity) VALUES (%s, %s, %s, %s, %s, %s)"
         data = (datetime, highway, mileage, wind_speed, temperature, humidity)
         cursor.execute(statement, data)
         connection.commit()
