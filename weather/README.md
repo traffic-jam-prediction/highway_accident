@@ -44,9 +44,9 @@ USE highway;
 
 ```sql
 CREATE TABLE weather (
-    datetime DATETIME,
-    highway VARCHAR(10) CHARACTER SET utf8mb4,
-    mileage DOUBLE,
+    Datetime DATETIME,
+    Highway VARCHAR(10) CHARACTER SET utf8mb4,
+    Mileage FLOAT,
     WindSpeed DOUBLE,
     Temperature DOUBLE,
     Humidity DOUBLE,
