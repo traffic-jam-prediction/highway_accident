@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     # Create Table
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS forecastdata (
+        CREATE TABLE IF NOT EXISTS traffic (
             DateTime TIMESTAMP,
             RoadSection VARCHAR(20),
             Highway VARCHAR(10),
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     # Insert Data
     for _, row in df.iterrows():
         sql = """
-            INSERT INTO forecastdata
+            INSERT INTO traffic
             (DateTime, RoadSection, Highway, Direction, Midpoint,
             M03A_PCU, M03A_PCU_BigGap, M05A_SpaceMeanSpeed, M05A_PCU, Accident, Holiday, Week) 
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
