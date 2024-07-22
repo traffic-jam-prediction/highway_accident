@@ -14,7 +14,7 @@
 You need the mysql.connector library
 
 ```bash
-pip install mysql.connector haversine
+pip install mysql.connector PyMuPDF
 ```
 
 ### Execution
