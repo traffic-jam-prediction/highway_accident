@@ -252,9 +252,19 @@ def integrated_forecastdata():
     # 取得m03a_data資訊
     new_df = pd.DataFrame(columns=['Date','Time','RoadSection','Highway','Direction','Midpoint',
                                'M03A_PCU','M03A_PCU_BigGap','M05A_SpaceMeanSpeed','M05A_PCU'])
-    for file_m03a, file_m05a in zip(matching_files_m03a, matching_files_m05a):
+    total_files = len(matching_files_m03a)  # Assuming both lists have the same length
+    
+
+
+    for index, (file_m03a, file_m05a) in enumerate(zip(matching_files_m03a, matching_files_m05a), 1):
         new_df = pd.concat([new_df, get_trafficvolume(file_m03a, file_m05a)], ignore_index=True)
-        print(file_m03a, file_m05a)
+        
+        # Calculate percentage
+        percentage = int((index / total_files) * 100)
+        
+        # Print the status
+        print(f"traffic data process status: {percentage}%", end='\r')  # \r returns the cursor to the start of the line
+    print("traffic data process status: completed")
 
     new_df = get_accident(new_df)
     new_df['Holiday'] = new_df['Date'].apply(mark_holiday)
