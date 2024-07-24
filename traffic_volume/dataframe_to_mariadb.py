@@ -3,7 +3,6 @@ import mariadb
 import sys
 import json
 import numpy as np
-from Integrated_forecastdata import integrated_forecastdata
 from dotenv import load_dotenv
 import os
 

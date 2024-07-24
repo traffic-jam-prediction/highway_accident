@@ -213,7 +213,7 @@ def find_matching_files(root_dir, prefix, date):
                 matching_files.append(os.path.join(root, file))
     return matching_files
 
-def integrated_forecastdata():
+def integrate_traffic_data():
 # if __name__ == '__main__':
     with open('traffic_volume_attributes.json', 'r', encoding='utf-8') as file:
         mapping = json.load(file)
