@@ -21,3 +21,5 @@ A2_accident.csv
 A3_accident.csv
 
 mariadb_test.py
+
+traffic_volume/.env

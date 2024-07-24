@@ -4,25 +4,26 @@ import sys
 import json
 import numpy as np
 from Integrated_forecastdata import integrated_forecastdata
+from dotenv import load_dotenv
+import os
 
 def save_traffic_dataframe_to_database(df):
 
-    # Load database authentication details
-    try:
-        with open('database_authentication.json', 'r') as file:
-            db_config = json.load(file)
-    except Exception as e:
-        print(f"Error loading database authentication details: {e}")
-        sys.exit(1)
+    load_dotenv()
+    username = str(os.getenv('username'))
+    password = str(os.getenv('password'))
+    host = str(os.getenv('host'))
+    port = int(os.getenv('port'))
+    database = str(os.getenv('database'))
 
     # Connect to MariaDB Platform
     try:
         conn = mariadb.connect(
-            user=db_config['username'],
-            password=db_config['password'],
-            host=db_config['host'],
-            port=db_config['port'],
-            database=db_config['database']
+            user = username,
+            password = password,
+            host = host,
+            port = port,
+            database = database
         )
 
     except mariadb.Error as e:
