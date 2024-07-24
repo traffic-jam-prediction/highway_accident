@@ -9,12 +9,35 @@
 | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 ## Getting Started
-### Installation
 
-You need the mysql.connector library
+### Install packages
 
 ```bash
-pip install mysql.connector PyMuPDF
+#!/bin/bash
+
+# Check if Python 3.10 is installed
+if ! command -v python3.10 &> /dev/null
+then
+    echo "Python 3.10 is required but not found. Please install it first."
+    exit 1
+fi
+
+# Upgrade pip
+python3.10 -m pip install --upgrade pip
+
+# Install packages
+python3.10 -m pip install pandas==2.2.1
+python3.10 -m pip install mariadb==1.1.10
+python3.10 -m pip install numpy==1.26.4
+python3.10 -m pip install PyMuPDF==1.24.7
+python3.10 -m pip install requests==2.25.1
+
+# Check if all installations were successful
+if [ $? -eq 0 ]; then
+    echo "All packages have been installed successfully."
+else
+    echo "An error occurred during package installation. Please check the output above for details."
+fi
 ```
 
 ### Execution
