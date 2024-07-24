@@ -23,7 +23,7 @@ def download_and_extract_tar(url, extract_path):
         
         # 刪除暫存檔案
         os.remove("temp.tar")
-        print("下載並解壓縮成功！")
+        print(f"下載並解壓縮 {url} 成功！")
     else:
         print("下載失敗！")
 
