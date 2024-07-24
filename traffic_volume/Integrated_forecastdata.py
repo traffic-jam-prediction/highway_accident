@@ -273,8 +273,9 @@ def integrated_forecastdata():
     new_df['DateTime'] = pd.to_datetime(new_df['Date'] + ' ' + new_df['Time'], format='%Y-%m-%d %H:%M:%S').dt.strftime('%Y-%m-%d %H:%M:%S')
     new_df.drop(['Date', 'Time'], axis=1, inplace=True)
     new_df = new_df[['DateTime'] + new_df.columns[:-1].tolist()]  
-    # new_df.to_csv('test_06.csv', encoding='utf-8-sig', index=False)
-    # print("數據已保存到 'test_06.csv'")
+    new_df.replace({np.nan: None}, inplace=True)
+    new_df['M03A_PCU_BigGap'] = new_df['M03A_PCU_BigGap'].apply(lambda x: str(x)[:1] if x is not None else None)
+    new_df['Holiday'] = new_df['Holiday'].apply(lambda x: str(x)[:1] if x is not None else None)
 
     # 刪除文件
     delete_file('extracted_files')

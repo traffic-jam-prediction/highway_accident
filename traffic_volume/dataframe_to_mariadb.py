@@ -5,12 +5,7 @@ import json
 import numpy as np
 from Integrated_forecastdata import integrated_forecastdata
 
-if __name__ == '__main__':
-    df = integrated_forecastdata()
-    # df = pd.read_csv('main06.csv')
-    df.replace({np.nan: None}, inplace=True)
-    df['M03A_PCU_BigGap'] = df['M03A_PCU_BigGap'].apply(lambda x: str(x)[:1] if x is not None else None)
-    df['Holiday'] = df['Holiday'].apply(lambda x: str(x)[:1] if x is not None else None)
+def save_traffic_dataframe_to_database(df):
 
     # Load database authentication details
     try:
