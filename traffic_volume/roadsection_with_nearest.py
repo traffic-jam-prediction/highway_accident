@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+import os
 
 def get_highway_midpoint():
     highway1 = pd.read_csv('../highway_information/國道1號.csv', encoding='utf-8')
@@ -88,6 +89,13 @@ def get_gantrid():
 
 
 def find_nearest_detection_points():
+    df = None
+
+    file_path = '../highway_information/roadsectiondata_with_nearest.csv'
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path)
+        return df
+    
     df = get_highway_midpoint()
     df['nearest_gantry1'] = None
     df['nearest_gantry2'] = None
@@ -181,8 +189,7 @@ def find_nearest_detection_points():
                 df.at[index, 'nearest_gantry1'] = nearest_two[0][0]  
                 df.at[index, 'nearest_gantry2'] = nearest_two[1][0]    
 
-    #df.to_csv('../highway_information/roadsectiondata_with_nearest.csv', encoding='utf-8-sig', index=False)
-    #print("roadsection_with_nearest.csv已儲存")
+    df.to_csv('../highway_information/roadsectiondata_with_nearest.csv', encoding='utf-8-sig', index=False)
     return(df)
 
 
