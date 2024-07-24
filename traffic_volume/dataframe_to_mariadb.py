@@ -29,7 +29,6 @@ if __name__ == '__main__':
             port=db_config['port'],
             database=db_config['database']
         )
-        print("Connection successful!") 
 
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB Platform: {e}")
