@@ -17,5 +17,7 @@ def count_trafficvolume(main_df):
     count_file.to_csv('count_file.csv', index=False, encoding='utf-8-sig')
     print("數據已保存到 'count_file.csv'")
 
-df = pd.read_csv('0607.csv')
+print("traffic data csv file name: ", end="")
+traffic_data_file = input()
+df = pd.read_csv(traffic_data_file)
 count_trafficvolume(df)

@@ -45,3 +45,9 @@ fi
 
 1. edit `.env.template` and save as `.env`
 2. execute `main.py`
+
+## goal
+
+- count_traffic_volume.py
+  - input: traffic data in csv format
+  - output: traffic volume sum for each road section in the given traffic data
