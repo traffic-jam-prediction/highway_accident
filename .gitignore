@@ -3,11 +3,17 @@ test2.py
 test.csv
 test1.csv
 test2.csv
+test06.csv
+test06_filt.csv
 count_file.csv
-trafficvolume_0101.csv
-trafficvolume.csv
+roadsectiondata_with_nearest_old.csv
+Integrated_data_0101.csv
+integrated_data_0101_old.csv
+integrated_data_0101_withaccident.csv
+
 extracted_files
-roadsectiondata_with_nearest.csv
+trafficvolume.csv
+
 roadsectiondata_with_nearest_old.csv
 integrated_data_0101_old.csv
 extracted_files
@@ -17,12 +23,18 @@ __pycache__
 
 A1_accident.csv
 A2_accident.csv
-#2023	1	19	13	49	0	A2	苗栗縣	銅鑼鄉	國道1號	136	400	136.4	中分局	苗栗工務段	南側	內側
-#高架?
+A3_accident.csv
+
+mariadb_test.py
+
+traffic_volume/.env
+
 A3_accident.csv
 
 A1_accident.xlsx
 A2_accident.xlsx
+#2023	1	19	13	49	0	A2	苗栗縣	銅鑼鄉	國道1號	136	400	136.4	中分局	苗栗工務段	南側	內側
+#高架?
 A3_accident.xlsx
 
 
@@ -32,3 +44,8 @@ traffic_volume_attributes.json
 
 # python
 __pycache__/
+
+
+mariadb_test.py
+
+traffic_volume/.env
