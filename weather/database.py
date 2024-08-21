@@ -7,8 +7,7 @@ username = os.getenv('username')
 password = os.getenv('password')
 
 
-def add_data(datetime: str, highway: str, mileage: float, wind_speed: float, temperature: float, humidity: float,):
-    print(username,password)
+def save_weather_data_to_database(datetime: str, highway: str, mileage: float, wind_speed: float, temperature: float, humidity: float):
     connection = database.connect(
         user=username,
         password=password,
