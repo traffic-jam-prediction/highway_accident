@@ -38,7 +38,7 @@ USE highway;
 
 ```sql
 CREATE TABLE weather (
-    Datetime DATETIME,
+    DateTime DATETIME,
     Highway VARCHAR(10) CHARACTER SET utf8mb4,
     Mileage FLOAT,
     WindSpeed DOUBLE,
