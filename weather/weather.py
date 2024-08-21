@@ -6,7 +6,7 @@ from typing import List
 from tdx_api import get_data, get_data_and_save_to_json
 from location import get_mileage_GPS, haversine_distance
 from file import write_json_to_file, read_json_file, write_list_to_file
-from database import add_data
+from database import save_weather_data_to_database
 
 VALUE_NOT_FOUND = -99.0
 
@@ -261,7 +261,7 @@ if __name__ == "__main__":
             for road_section in road_section_list:
                 weather = get_weather(
                     current_date, time_string, road_section.highway_name, road_section.mileage)
-                add_data(f'{current_date.isoformat()} {current_time.isoformat()}', road_section.highway_name,
+                save_weather_data_to_database(f'{current_date.isoformat()} {current_time.isoformat()}', road_section.highway_name,
                          road_section.mileage, weather['WDSD'], weather['Temp'], weather['HUMD'])
             print(current_time)
             current_time = next_time(current_time)
