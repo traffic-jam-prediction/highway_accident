@@ -202,7 +202,7 @@ def get_road_sections() -> List[RoadSection]:
     road_section_list = []
     previous_highway = None
     previous_mileage = None
-    with open('roadsectiondata_with_nearest.csv', 'r', encoding='utf-8') as csvfile:
+    with open('../highway_information/roadsectiondata_with_nearest.csv', 'r', encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile)
         attributes = next(csvreader)
         highway_index = attributes.index('highway')
