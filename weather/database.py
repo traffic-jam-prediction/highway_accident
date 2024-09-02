@@ -10,13 +10,15 @@ def save_weather_data_to_database(datetime: str, highway: str, mileage: float, w
         os.path.dirname(__file__), '..', '.env'))
     username = os.getenv('username')
     password = os.getenv('password')
+    host = os.getenv('host')
+    database_name = os.getenv('database')
     table_name = "weather"
 
     connection = database.connect(
         user=username,
         password=password,
-        host="localhost",
-        database="highway")
+        host=host,
+        database=database_name)
     cursor = connection.cursor()
     try:
         # Check if the table exists
