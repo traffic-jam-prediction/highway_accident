@@ -2,12 +2,12 @@ import mysql.connector as database
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-username = os.getenv('username')
-password = os.getenv('password')
-
 
 def save_weather_data_to_database(datetime: str, highway: str, mileage: float, wind_speed: float, temperature: float, humidity: float):
+    load_dotenv(dotenv_path=os.path.join(
+        os.path.dirname(__file__), '..', '.env'))
+    username = os.getenv('username')
+    password = os.getenv('password')
     connection = database.connect(
         user=username,
         password=password,

@@ -48,4 +48,4 @@ __pycache__/
 
 mariadb_test.py
 
-traffic_volume/.env
+.env

@@ -6,9 +6,11 @@ import numpy as np
 from dotenv import load_dotenv
 import os
 
+
 def save_traffic_dataframe_to_database(df):
 
-    load_dotenv()
+    load_dotenv(dotenv_path=os.path.join(
+        os.path.dirname(__file__), '..', '.env'))
     username = str(os.getenv('username'))
     password = str(os.getenv('password'))
     host = str(os.getenv('host'))
@@ -18,11 +20,11 @@ def save_traffic_dataframe_to_database(df):
     # Connect to MariaDB Platform
     try:
         conn = mariadb.connect(
-            user = username,
-            password = password,
-            host = host,
-            port = port,
-            database = database
+            user=username,
+            password=password,
+            host=host,
+            port=port,
+            database=database
         )
 
     except mariadb.Error as e:
