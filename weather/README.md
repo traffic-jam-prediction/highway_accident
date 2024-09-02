@@ -24,26 +24,3 @@ pip install mysql.connector haversine python-dotenv
 ### SQL authentication
 
 - edit   ```.env``` with your username and password in mysql
-
-### create database
-
-The weather table should be under the highway database
-
-```sql
-CREATE DATABASE highway;
-USE highway;
-```
-
-### create table
-
-```sql
-CREATE TABLE weather (
-    DateTime DATETIME,
-    Highway VARCHAR(10) CHARACTER SET utf8mb4,
-    Mileage FLOAT,
-    WindSpeed DOUBLE,
-    Temperature DOUBLE,
-    Humidity DOUBLE,
-    UNIQUE (Datetime, Highway, Mileage)
-);
-```
